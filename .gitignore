@@ -1,0 +1,8 @@
+.vscode
+build
+
+# ignore vim files
+*.swp
+
+# compile db for clangd and YCM
+compile_commands.json
