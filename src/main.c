@@ -3,6 +3,7 @@
 
 #include "eeprom.h"
 
+// playground, for testing things out
 int main(int argc, char * argv[]) {
     int device = open_device(1);
     __u8 buf[32];
