@@ -121,7 +121,8 @@ void read_eeprom(int file, char* buf, size_t buf_size) {
 
     HANDLE_ERROR(
         i2c_smbus_write_i2c_block_data(file, 0x00, 1, write_data),
-        "Error writing block data to i2c.");
+        "Error writing block data to i2c."
+    );
 
     res = HANDLE_ERROR(i2c_smbus_read_i2c_block_data(file, 0, 29, buf),
         "Error reading from device.");
