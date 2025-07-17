@@ -1,6 +1,10 @@
 #ifndef EEPROM_H
 #define EEPROM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,6 +17,8 @@
 
 __u8 EEP_ADDRESS = 0x50;
 __u8 EEP_WP = 12;
+__u8 EEP_READ_COMMAND = 0;
+__u8 EEP_READ_LENGTH = 29;
 
 const char *VALID_COLORS[] = {
     NULL, "black", "red", "yellow", NULL, "7colour", "spectra6"
@@ -61,8 +67,8 @@ struct EPDType {
     char eeprom_write_time[22];
 };
 
-struct EPDType* create_epd_data_from_buffer(char* buf)  {
-    struct EPDType* data = malloc(sizeof(struct EPDType));
+struct EPDType* create_epd_data_from_buffer(const char* buf)  {
+    struct EPDType* data = (struct EPDType*)malloc(sizeof(struct EPDType));
 
     memcpy(&data->width, buf, sizeof(__u16));
     memcpy(&data->height, buf+2, sizeof(__u16));
@@ -124,8 +130,13 @@ void read_eeprom(int file, char* buf, size_t buf_size) {
         "Error writing block data to i2c."
     );
 
-    res = HANDLE_ERROR(i2c_smbus_read_i2c_block_data(file, 0, 29, buf),
-        "Error reading from device.");
+    res = HANDLE_ERROR(
+        i2c_smbus_read_i2c_block_data(file, EEP_READ_COMMAND, EEP_READ_LENGTH, (__u8*)buf),
+        "Error reading from device."
+    );
 }
 
+#ifdef __cplusplus
+}
+#endif
 #endif

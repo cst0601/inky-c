@@ -10,3 +10,9 @@ WIP.
 over there.
 
 ## Build
+
+```
+mkdir build
+cmake -B build -S .
+cmake --build build
+```

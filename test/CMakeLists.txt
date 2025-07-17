@@ -12,14 +12,22 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-# enable_testing()
-# add_executable(
-#     inky_test
-#     main.cpp
-# )
-# target_link_libraries(
-#     inky_test
-#     GTest::gtest_main
-# )
-# include(GoogleTest)
-# gtest_discover_tests(inky_test)
+# build test
+enable_testing()
+
+add_executable(
+  inky_test
+  main.cpp
+  eeprom_test.cpp
+)
+target_link_libraries(
+  inky_test 
+  GTest::gtest_main
+  GTest::gmock
+  i2c
+)
+target_include_directories(inky_test PUBLIC ../includes)
+set_target_properties(inky_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+
+include(GoogleTest)
+gtest_discover_tests(inky_test)
