@@ -1,6 +1,10 @@
 #ifndef EEPROM_H
 #define EEPROM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,6 +17,8 @@
 
 __u8 EEP_ADDRESS = 0x50;
 __u8 EEP_WP = 12;
+__u8 EEP_READ_COMMAND = 0;
+__u8 EEP_READ_LENGTH = 29;
 
 const char *VALID_COLORS[] = {
     NULL, "black", "red", "yellow", NULL, "7colour", "spectra6"
@@ -61,17 +67,17 @@ struct EPDType {
     char eeprom_write_time[22];
 };
 
-struct EPDType* create_epd_data_from_buffer(char* buf)  {
-    struct EPDType* data = malloc(sizeof(struct EPDType));
+void create_epd_data_from_buffer(struct EPDType **data, const char* buf)
+{
+    *data = (struct EPDType*)malloc(sizeof(struct EPDType));
+    struct EPDType *data_addr = *data;
 
-    memcpy(&data->width, buf, sizeof(__u16));
-    memcpy(&data->height, buf+2, sizeof(__u16));
-    memcpy(&data->color, buf+4, sizeof(__u8));
-    memcpy(&data->pcb_variant, buf+5, sizeof(__u8));
-    memcpy(&data->display_variant, buf+6, sizeof(__u8));
-    memcpy(&data->eeprom_write_time, buf+7, sizeof(char) * 22);
-
-    return data;
+    memcpy(&data_addr->width, buf, sizeof(__u16));
+    memcpy(&data_addr->height, buf+2, sizeof(__u16));
+    memcpy(&data_addr->color, buf+4, sizeof(__u8));
+    memcpy(&data_addr->pcb_variant, buf+5, sizeof(__u8));
+    memcpy(&data_addr->display_variant, buf+6, sizeof(__u8));
+    memcpy(&data_addr->eeprom_write_time, buf+7, sizeof(char) * 22);
 }
 
 void print_epd_data(const struct EPDType* data) {
@@ -121,10 +127,16 @@ void read_eeprom(int file, char* buf, size_t buf_size) {
 
     HANDLE_ERROR(
         i2c_smbus_write_i2c_block_data(file, 0x00, 1, write_data),
-        "Error writing block data to i2c.");
+        "Error writing block data to i2c."
+    );
 
-    res = HANDLE_ERROR(i2c_smbus_read_i2c_block_data(file, 0, 29, buf),
-        "Error reading from device.");
+    res = HANDLE_ERROR(
+        i2c_smbus_read_i2c_block_data(file, EEP_READ_COMMAND, EEP_READ_LENGTH, (__u8*)buf),
+        "Error reading from device."
+    );
 }
 
+#ifdef __cplusplus
+}
+#endif
 #endif

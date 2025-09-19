@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int handle_error(
+static inline int handle_error(
         const int response,
         const char* message,
         const char* file,
