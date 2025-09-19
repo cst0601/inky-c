@@ -1,7 +1,6 @@
-#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
-#include <iostream>
 
 #include "../src/eeprom.h"
 
@@ -31,7 +30,8 @@ namespace
 
     TEST(Eeprom, TestCreateEpdDataFromBuffer)
     {
-        struct EPDType* epd_data = create_epd_data_from_buffer(eeprom_data);
+        struct EPDType* epd_data = NULL;
+        create_epd_data_from_buffer(&epd_data, eeprom_data);
         
         ASSERT_EQ(epd_data->width, 800);
         ASSERT_EQ(epd_data->height, 480);

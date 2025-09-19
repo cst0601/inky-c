@@ -67,17 +67,17 @@ struct EPDType {
     char eeprom_write_time[22];
 };
 
-struct EPDType* create_epd_data_from_buffer(const char* buf)  {
-    struct EPDType* data = (struct EPDType*)malloc(sizeof(struct EPDType));
+void create_epd_data_from_buffer(struct EPDType **data, const char* buf)
+{
+    *data = (struct EPDType*)malloc(sizeof(struct EPDType));
+    struct EPDType *data_addr = *data;
 
-    memcpy(&data->width, buf, sizeof(__u16));
-    memcpy(&data->height, buf+2, sizeof(__u16));
-    memcpy(&data->color, buf+4, sizeof(__u8));
-    memcpy(&data->pcb_variant, buf+5, sizeof(__u8));
-    memcpy(&data->display_variant, buf+6, sizeof(__u8));
-    memcpy(&data->eeprom_write_time, buf+7, sizeof(char) * 22);
-
-    return data;
+    memcpy(&data_addr->width, buf, sizeof(__u16));
+    memcpy(&data_addr->height, buf+2, sizeof(__u16));
+    memcpy(&data_addr->color, buf+4, sizeof(__u8));
+    memcpy(&data_addr->pcb_variant, buf+5, sizeof(__u8));
+    memcpy(&data_addr->display_variant, buf+6, sizeof(__u8));
+    memcpy(&data_addr->eeprom_write_time, buf+7, sizeof(char) * 22);
 }
 
 void print_epd_data(const struct EPDType* data) {
